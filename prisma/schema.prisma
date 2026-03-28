@@ -1,0 +1,48 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  chats     Chat[]
+  docs      Document[]
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  title     String
+  createdAt DateTime  @default(now())
+  messages  Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  role      String   // "user" or "assistant"
+  content   String
+  citations Json?    // Array of {act, section, text}
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  fileUrl       String
+  extractedText String   @db.Text
+  // We use pgvector for embeddings. An embedding of dimension 768 is common for Google text-embedding models.
+  embedding     Unsupported("vector(768)")? 
+  createdAt     DateTime @default(now())
+}
