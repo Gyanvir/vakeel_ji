@@ -22,13 +22,13 @@ export function Sidebar() {
       </div>
 
       <div className="p-4">
-        <Link
+        <a
           href="/chat"
           className="flex w-full items-center gap-2 rounded-lg bg-white border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 transition-colors"
         >
           <Plus size={16} />
           New Chat
-        </Link>
+        </a>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-2">
